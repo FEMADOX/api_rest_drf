@@ -7,6 +7,13 @@ class Category(models.Model):
     name: models.CharField = models.CharField(max_length=50)
     created: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        ordering = ["-created"]
+        indexes = [
+            models.Index(fields=["-created"]),
+            models.Index(fields=["name"]),
+        ]
+
     def __str__(self):
         return self.name
 
@@ -30,6 +37,14 @@ class Product(models.Model):
     created: models.DateTimeField = models.DateTimeField(auto_now_add=True)
     updated: models.DateTimeField = models.DateTimeField(auto_now=True,
                                                          auto_now_add=False)
+
+    class Meta:
+        ordering = ["-created"]
+        indexes = [
+            models.Index(fields=["-created"]),
+            models.Index(fields=["title"]),
+            models.Index(fields=["updated"]),
+        ]
 
     def __str__(self):
         return f"Product: {self.title} | Category: {self.category}"\

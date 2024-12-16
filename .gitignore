@@ -4,6 +4,7 @@
 # User
 migrations
 requirements-dev.txt
+*.code-workspace
 
 ### Django ###
 *.log

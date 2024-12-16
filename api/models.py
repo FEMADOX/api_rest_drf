@@ -15,7 +15,8 @@ class Product(models.Model):
     title: models.CharField = models.CharField(max_length=100)
     category: models.ForeignKey = models.ForeignKey(
         Category,
-        on_delete=models.CASCADE
+        related_name="Products",
+        on_delete=models.CASCADE,
     )
     price: models.DecimalField = models.DecimalField(max_digits=10,
                                                      decimal_places=2)
@@ -24,6 +25,7 @@ class Product(models.Model):
         height_field=None,
         width_field=None,
         max_length=None,
+        default="",
     )
     created: models.DateTimeField = models.DateTimeField(auto_now_add=True)
     updated: models.DateTimeField = models.DateTimeField(auto_now=True,

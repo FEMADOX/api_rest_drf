@@ -1,8 +1,10 @@
-from rest_framework import generics, status
+from django.shortcuts import get_object_or_404
+from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 
 from api.models import Category, Product
-from api.serializers import CategorySerializer, ProductSerializer
+from api.serializers import (CategoryProductSerializer, CategorySerializer,
+                             ProductSerializer)
 
 # Create your views here.
 
@@ -32,14 +34,17 @@ class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
         try:
             obj = queryset.get(id=lookup_value)
         except (Product.DoesNotExist, ValueError):
-            try:
-                obj = queryset.get(title=lookup_value)
-            except Product.DoesNotExist:
-                raise status.HTTP_404_NOT_FOUND
+            obj = get_object_or_404(queryset, title=lookup_value)
         return obj
 
 
 class CategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+    lookup_url_kwarg = "category_id"
+
+
+class CategoryProductView(generics.RetrieveAPIView):
+    serializer_class = CategoryProductSerializer
     queryset = Category.objects.all()
     lookup_url_kwarg = "category_id"

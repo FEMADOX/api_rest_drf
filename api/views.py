@@ -3,8 +3,11 @@ from rest_framework import generics
 from rest_framework.pagination import PageNumberPagination
 
 from api.models import Category, Product
-from api.serializers import (CategoryProductSerializer, CategorySerializer,
-                             ProductSerializer)
+from api.serializers import (
+    CategoryProductSerializer,
+    CategorySerializer,
+    ProductSerializer,
+)
 
 # Create your views here.
 
@@ -24,8 +27,6 @@ class CategoryView(generics.ListCreateAPIView):
 class ProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductSerializer
     queryset = Product.objects.all()
-    lookup_url_kwarg = "product_id"
-    lookup_field = "title"
 
     def get_object(self):
         queryset = self.get_queryset()

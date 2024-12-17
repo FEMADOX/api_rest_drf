@@ -18,11 +18,14 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
+    path("api-auth/", include("api_auth.urls")),
+    re_path(r"^drf-auth/", include("rest_framework.urls",
+                                   namespace="rest_framework")),
 ]
 
 if settings.DEBUG:

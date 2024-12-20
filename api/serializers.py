@@ -49,14 +49,6 @@ class OrderSerializer(serializers.ModelSerializer):
         return order
 
 
-class OrderDetailSerializer(serializers.ModelSerializer):
-    products_order = ProductOrderSerializer(many=True)
-
-    class Meta:
-        model = Order
-        fields = ["code", "client", "products_order", "created"]
-
-
 class ClientSerializer(serializers.ModelSerializer):
 
     class Meta:

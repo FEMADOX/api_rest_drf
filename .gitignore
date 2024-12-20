@@ -5,6 +5,7 @@
 migrations
 requirements-dev.txt
 *.code-workspace
+.vscode
 
 ### Django ###
 *.log

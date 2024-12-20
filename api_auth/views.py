@@ -44,7 +44,7 @@ class LoginView(APIView):
         return Response(context)
 
 
-class UserView(generics.RetrieveAPIView):
+class UserView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserDetailSerializer
     queryset = User.objects.all()
     permission_classes = [IsAdminUser]

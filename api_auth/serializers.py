@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
+from api.models import Client
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -16,6 +18,7 @@ class UserSerializer(serializers.ModelSerializer):
             first_name=validated_data["first_name"],
         )
         user.set_password(validated_data["password"])
+        Client.objects.create(name=validated_data["first_name"])
         user.save()
 
         return user

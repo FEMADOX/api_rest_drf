@@ -110,7 +110,7 @@ class ClientDetailView(generics.RetrieveUpdateDestroyAPIView):
             return super().destroy(request, *args, **kwargs)
 
 
-class ClientOrderView(generics.RetrieveAPIView):
+class ClientOrderView(generics.RetrieveUpdateAPIView):
     serializer_class = ClientOrderSerializer
     permission_classes = [IsClientOrAdmin]
 

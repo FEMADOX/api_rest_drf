@@ -102,8 +102,8 @@ class Order(models.Model):
 class ProductOrder(models.Model):
     order: models.ForeignKey = models.ForeignKey(
         Order,
-        related_name="products_order",
         on_delete=models.RESTRICT,
+        related_name="products_order",
     )
     product: models.ForeignKey = models.ForeignKey(
         Product,

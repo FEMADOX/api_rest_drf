@@ -29,7 +29,7 @@ class ProductOrderSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ProductOrder
-        fields = ["product", "quantity"]
+        fields = ["product", "quantity", "order_price"]
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -69,6 +69,7 @@ class ClientOrderSerializer(serializers.ModelSerializer):
             "id",
             "code",
             "products_order",
+            "total_price",
         ]
 
     def update(self, instance: Order, validated_data: dict):

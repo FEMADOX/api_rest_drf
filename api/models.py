@@ -88,6 +88,15 @@ class Order(models.Model):
     )
     created: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def total_price(self):
+        total_orders_price = sum(
+            product_order.order_price
+            for product_order
+            in self.products_order.all()
+        )
+        return total_orders_price
+
     class Meta:
         ordering = ["-created"]
         indexes = [
@@ -112,6 +121,10 @@ class ProductOrder(models.Model):
     quantity: models.PositiveIntegerField = models.PositiveIntegerField(
         default=1,
     )
+
+    @property
+    def order_price(self):
+        return self.product.price * self.quantity
 
     class Meta:
         ordering = ["order"]

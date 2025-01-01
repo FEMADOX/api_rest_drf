@@ -66,6 +66,11 @@ class Client(models.Model):
         blank=True,
         null=True,
     )
+    direction: models.CharField = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
     created: models.DateTimeField = models.DateTimeField(auto_now_add=True)
 
     class Meta:

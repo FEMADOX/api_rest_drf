@@ -8,6 +8,7 @@ urlpatterns = [
     path("products/", ProductView.as_view(), name="all_products"),
     path("categories/", CategoryView.as_view(), name="all_categories"),
     path("clients/", ClientView.as_view(), name="all_clients"),
+
     # Detail Urls
     path(
         "products/product/<lookup_value>",
@@ -25,10 +26,19 @@ urlpatterns = [
         name="client_detail",
     ),
     # Relationship Urls
+
+    # Category
     path(
         "categories/category/<int:category_id>/products",
         CategoryProductView.as_view(),
         name="products_by_category",
+    ),
+
+    # Client
+    path(
+        "client/<int:client_id>/",
+        OrderCreateView.as_view(),
+        name="create_order",
     ),
     path(
         "client/<int:client_id>/add_order/",

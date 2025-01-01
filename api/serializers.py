@@ -57,6 +57,7 @@ class ClientSerializer(serializers.ModelSerializer):
             "name",
             "email",
             "phone",
+            "direction"
         ]
 
 

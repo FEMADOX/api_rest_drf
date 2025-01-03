@@ -1,24 +1,29 @@
+import stripe
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 from rest_framework import generics, status
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import (SAFE_METHODS, BasePermission,
                                         IsAdminUser)
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from api.models import Category, Client, Order, Product
 from api.serializers import (CategoryProductSerializer, CategorySerializer,
                              ClientOrderSerializer, ClientSerializer,
-                             OrderSerializer, ProductSerializer)
+                             OrderSerializer, PaymentSerializer,
+                             ProductSerializer)
 
 # Create your views here.
+
+stripe.api_key = settings.STRIPE_SECRET_API
 
 
 class IsAdminOrReadOnly(BasePermission):
     def has_permission(self, request, view):
         return bool(
             request.method in SAFE_METHODS
-            or request.user
-            and request.user.is_staff
+            or request.user and request.user.is_staff
         )
 
 
@@ -121,3 +126,36 @@ class ClientOrderView(generics.RetrieveUpdateAPIView):
     def get_object(self):
         queryset = self.get_queryset()
         return get_object_or_404(queryset)
+
+
+class StripePaymentView(APIView):
+    serializer_class = PaymentSerializer
+    permission_classes = [IsClientOrAdmin]
+
+    def post(self, request: Response, *args, **kwargs):
+        serializer = PaymentSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                data = serializer.validated_data
+                order_id = data.get("order_id")
+                order = get_object_or_404(Order, id=order_id)
+                total_price = order.total_price
+
+                intent = stripe.PaymentIntent.create(
+                    amount=int(total_price * 100),
+                    currency="usd",
+                    payment_method_types=["card"],
+                )
+                return Response(
+                    {
+                        "client_secret": intent["client_secret"],
+                    }
+                )
+            except Exception as e:
+                return Response(
+                    {
+                        "error": str(e),
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

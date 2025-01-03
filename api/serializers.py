@@ -74,29 +74,28 @@ class ClientOrderSerializer(serializers.ModelSerializer):
         ]
 
     def update(self, instance: Order, validated_data: dict):
-        updated_order_data = validated_data.pop('products_order')
-        instance.code = validated_data.get('code', instance.code)
+        updated_order_data = validated_data.pop("products_order")
+        instance.code = validated_data.get("code", instance.code)
         instance.save()
 
         # Existing Products Id
-        existing_products_id = [product_order.product.id
-                                for product_order
-                                in instance.products_order.all()]
+        existing_products_id = [
+            product_order.product.id
+            for product_order in instance.products_order.all()
+            if product_order.product.id
+        ]
 
         # New Products Id
         new_products_id = [
             product_data["product"].id
-            for product_data
-            in updated_order_data
-            if product_data["product"].id
-            not in existing_products_id
+            for product_data in updated_order_data
+            if product_data["product"].id not in existing_products_id
         ]
 
         # Update products_order
         for product_data in updated_order_data:
             product_id = product_data["product"].id
-            if (product_id
-                    and product_id in existing_products_id):
+            if product_id and product_id in existing_products_id:
                 product_order = ProductOrder.objects.get(
                     order=instance,
                     product=product_id,
@@ -108,12 +107,28 @@ class ClientOrderSerializer(serializers.ModelSerializer):
                 if product_order.quantity == 0:
                     product_order.delete()
 
-            if (product_id and product_data["quantity"]
-                    and product_id in new_products_id):
+            if (
+                product_id
+                and product_data["quantity"]
+                and product_id in new_products_id
+            ):
                 product_order = ProductOrder.objects.create(
                     order=instance,
-                    **product_data
+                    **product_data,
                 )
                 product_order.save()
 
         return instance
+
+
+class PaymentSerializer(serializers.Serializer):
+    order_id = serializers.IntegerField()
+    # order_id = serializers.PrimaryKeyRelatedField(
+    #   queryset=Order.objects.all())
+
+    # amount = Order.objects.get("total_price")
+    # amount = serializers.DecimalField(max_digits=10, decimal_places=2)
+
+    # client_id = serializers.IntegerField()
+    # total_price = serializers.FloatField()
+    # payment_method = serializers.CharField()

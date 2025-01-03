@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+from decouple import config
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "m3hf8j7kefnyk)&!7hu5)jukfbc#yt#sp%7uhyg(d8!f5_o@yv"
+SECRET_KEY = config("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS: list = []
 
@@ -42,6 +44,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "api",
     "api_auth",
+    "api_payment",
 ]
 
 REST_FRAMEWORK = {
@@ -65,7 +68,7 @@ ROOT_URLCONF = "api_rest_eccommers.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -86,7 +89,7 @@ WSGI_APPLICATION = "api_rest_eccommers.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
+        "ENGINE": config("DATABASE_ENGINE"),
         "NAME": BASE_DIR / "db.sqlite3",
     }
 }
@@ -131,6 +134,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    BASE_DIR / "static"
+]
 
 MEDIA_URL = "media/"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -144,7 +150,4 @@ STRIPE_PUBLIC_API = (
     "pk_test_51QLa58LKyV0zbNjruqDqJXdGeEf1VDtYfMKwpOUtKJwLJl4gmdufY0RX9cHCf"
     "g3Mp89EkwyEZoq2U1CvX6jYSfUj00hN8dcw65"
 )
-STRIPE_SECRET_API = (
-    "sk_test_51QLa58LKyV0zbNjr9kSwZOs1QpNyEHI6X5VVF6qADfbNAYOdregXMQLKv2DWu"
-    "vf7lB1pTFrhUxEIeI2kowy8LURL007KOjP2Hb"
-)
+STRIPE_SECRET_API = config("STRIPE_SECRET_API")

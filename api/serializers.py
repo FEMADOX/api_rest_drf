@@ -119,16 +119,3 @@ class ClientOrderSerializer(serializers.ModelSerializer):
                 product_order.save()
 
         return instance
-
-
-class PaymentSerializer(serializers.Serializer):
-    order_id = serializers.IntegerField()
-    # order_id = serializers.PrimaryKeyRelatedField(
-    #   queryset=Order.objects.all())
-
-    # amount = Order.objects.get("total_price")
-    # amount = serializers.DecimalField(max_digits=10, decimal_places=2)
-
-    # client_id = serializers.IntegerField()
-    # total_price = serializers.FloatField()
-    # payment_method = serializers.CharField()

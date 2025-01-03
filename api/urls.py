@@ -2,8 +2,7 @@ from django.urls import path
 
 from api.views import (CategoryDetailView, CategoryProductView, CategoryView,
                        ClientDetailView, ClientOrderView, ClientView,
-                       OrderCreateView, ProductDetailView, ProductView,
-                       StripePaymentView)
+                       OrderCreateView, ProductDetailView, ProductView)
 
 urlpatterns = [
     path("products/", ProductView.as_view(), name="all_products"),
@@ -26,6 +25,7 @@ urlpatterns = [
         ClientDetailView.as_view(),
         name="client_detail",
     ),
+
     # Relationship Urls
 
     # Category
@@ -37,23 +37,13 @@ urlpatterns = [
 
     # Client
     path(
-        "client/<int:client_id>/",
-        OrderCreateView.as_view(),
-        name="create_order",
-    ),
-    path(
-        "client/<int:client_id>/add_order/",
-        OrderCreateView.as_view(),
-        name="create_order",
-    ),
-    path(
         "client/<int:client_id>/order/",
         ClientOrderView.as_view(),
         name="client_order",
     ),
     path(
-        'create-payment/',
-        StripePaymentView.as_view(),
-        name='create-payment',
+        "client/<int:client_id>/add_order/",
+        OrderCreateView.as_view(),
+        name="create_order",
     ),
 ]

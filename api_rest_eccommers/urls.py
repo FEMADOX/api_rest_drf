@@ -24,6 +24,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("api.urls")),
     path("api-auth/", include("api_auth.urls")),
+    path("api/payment/", include("api_payment.urls")),
     re_path(r"^drf-auth/", include("rest_framework.urls",
                                    namespace="rest_framework")),
 ]
@@ -31,4 +32,7 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += static(
         settings.MEDIA_URL, document_root=settings.MEDIA_ROOT
+    )  # type:ignore
+    urlpatterns += static(
+        settings.STATIC_URL, document_root=settings.STATIC_ROOT
     )  # type:ignore

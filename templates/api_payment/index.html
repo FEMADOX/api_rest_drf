@@ -12,7 +12,7 @@
   <body>
     <form id="payment-form">{% csrf_token %}
       <div id="card-element"></div>
-      <button type="submit">Pay</button>
+      <input type="submit" value="Pay">
     </form>
     <script src="{% static 'api_payment/js/payment.js' %}"></script>
   </body>

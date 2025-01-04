@@ -14,7 +14,12 @@ form.addEventListener('submit', async (event) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ order_id: 12 }), // Replace with actual order ID
+        body: JSON.stringify(
+            {
+                order_id: 12,
+                client_id: 3
+            }
+        ), // Replace with actual order ID
     });
 
     const { client_secret } = await response.json();

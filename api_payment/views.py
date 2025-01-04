@@ -1,8 +1,10 @@
 import stripe
 from django.conf import settings
 from django.shortcuts import get_object_or_404, render
-from rest_framework import generics
+from rest_framework import generics, status
+from rest_framework.response import Response
 from rest_framework.serializers import ValidationError
+from rest_framework.views import APIView
 
 from api.models import Order
 from api.permissions import IsClientOrAdmin
@@ -32,7 +34,11 @@ class StripePaymentView(generics.CreateAPIView):
             intent = stripe.PaymentIntent.create(
                 amount=int(total_price * 100),
                 currency="usd",
-                payment_method_types=["card"],
+                payment_method="pm_card_visa",
+                automatic_payment_methods={
+                    "enabled": True,
+                    "allow_redirects": "never"
+                },
             )
             self.client_secret = intent["client_secret"]
         except Exception as e:
@@ -42,13 +48,27 @@ class StripePaymentView(generics.CreateAPIView):
         response = super().create(request, *args, **kwargs)
         response.data["client_secret"] = self.client_secret
         # response.data["total_price"] = self.serializer_class["total_price"]
-        response.data["payment_url"] = (
-            request.build_absolute_uri("/api/payment/payment/")
+        response.data["payment_url"] = request.build_absolute_uri(
+            "/api/payment/payment/"
         )
         return response
 
 
+class ConfirmPaymentView(APIView):
+    def post(self, request, payment_intent_id):
+        try:
+            intent = stripe.PaymentIntent.retrieve(payment_intent_id)
+            intent.confirm()
+            return Response(
+                {"status": intent.status},
+                status=status.HTTP_200_OK,
+            )
+        except stripe.error.StripeError as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+
 def payment_page(request):
     return render(request, "api_payment/index.html")
-
-# pi_3QdIbaLKyV0zbNjr1CWsqjwT_secret_BHrqGBQh08njxJNu8rqX9A69S

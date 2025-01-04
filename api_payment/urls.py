@@ -1,6 +1,7 @@
 from django.urls import path
 
-from api_payment.views import StripePaymentView, payment_page
+from api_payment.views import (ConfirmPaymentView, StripePaymentView,
+                               payment_page)
 
 urlpatterns = [
     path(
@@ -9,8 +10,13 @@ urlpatterns = [
         name='create-payment',
         ),
     path(
-        'payment/',
+        'payment_page/',
         payment_page,
         name='payment_page',
+        ),
+    path(
+        'payment/confirm/<str:payment_intent_id>/',
+        ConfirmPaymentView.as_view(),
+        name='confirm-payment',
         ),
 ]
